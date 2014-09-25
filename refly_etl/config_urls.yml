@@ -1,0 +1,20 @@
+source:
+    source: JSON
+    fields:
+        - name: key
+          type: String
+          map: url
+        - name: value
+          type: String
+          map: parsed_url
+
+manipulations:
+  - filter: refly_etl.modifiers.UniqueField
+    field: key
+
+target:
+  type: CSV
+  resource: urls.csv
+  delimiter: "|"
+  addHeader: false
+  appendFile: false

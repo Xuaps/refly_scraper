@@ -13,3 +13,8 @@ class ReferenceItem(scrapy.Item):
   content = scrapy.Field()
   path = scrapy.Field()
   url = scrapy.Field()
+
+  docset = scrapy.Field()
+  type =scrapy.Field()
+  parsed_url = scrapy.Field()
+  parent = scrapy.Field()

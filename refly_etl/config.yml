@@ -1,0 +1,34 @@
+source:
+    source: JSON
+    fields:
+        - name: reference
+          type: String
+          map: name
+        - name: content
+          type: String
+        - name: uri
+          type: String
+          map: parsed_url
+          key: true
+        - name: parent
+          type: String
+        - name: type
+          type: String
+        - name: docset
+          type: String
+          key: true
+
+manipulations:
+  - modifier: refly_etl.modifiers.ReplaceByDictFile
+    field: content
+    file: urls.csv 
+    regex: #
+      \[.*\]\((.*)\)
+  - filter: refly_etl.modifiers.UniqueField
+    field: uri
+
+target:
+  type: Database
+  url: postgresql://postgres@127.0.0.1:5432/slashdb
+  fn: refly_etl.querys.UpsertQuery
+  continueOnError: true
