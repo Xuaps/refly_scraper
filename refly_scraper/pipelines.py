@@ -19,7 +19,7 @@ class ReflyPipeline(object):
         return item
 
     def html2text(self, html):
-        """use html2text but repair newlines cutting urls"""
+        """use html2text but repair newlines cutting urls and fix errors in links with code inside"""
         h = html2text_orig.HTML2Text()
         h.inline_links = False
         txt = h.handle(html).replace('`[', '[`')
