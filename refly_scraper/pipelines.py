@@ -8,14 +8,14 @@ import html2text as html2text_orig
 import re
 
 class ReflyPipeline(object):
-    link_re = re.compile(r"\[\d*\]: (?:[\.:?=/\w \-#]|(?:\n))*", re.MULTILINE)
+    link_re = re.compile("(\[\d*\]: (?:[\.:?=/\w \-#\(\)~,\.;\\n]|(?:\[\[[a-zA-Z]*\]\]))*)\\n\\n")
 
     def process_item(self, item, spider):
-    	item['docset'] = spider.name
-    	item['type'] = spider.resolveType(item['url'], item['name'])
-    	item['parsed_url'] = spider.getSlashUrl(item['path'], item['name'])
-    	item['parent'] = item['parsed_url'][0:item['parsed_url'].rfind('/')]
-    	item['content'] = self.html2text(item['content'])
+        item['docset'] = spider.name
+        item['type'] = spider.resolveType(item['url'], item['name'])
+        item['parsed_url'] = spider.getSlashUrl(item['path'], item['name'])
+        item['parent'] = item['parsed_url'][0:item['parsed_url'].rfind('/')]
+        item['content'] = self.html2text(item['content'])
         return item
 
     def html2text(self, html):
@@ -23,8 +23,8 @@ class ReflyPipeline(object):
         h = html2text_orig.HTML2Text()
         h.inline_links = False
         txt = h.handle(html).replace('`[', '[`')
-        
+
         for l in self.link_re.findall(txt):
-            txt=txt.replace(l, l.replace('\n',''))
-    
+            txt = txt.replace(l, l.replace('\n(', ' (').replace('\n', ''))
+
         return txt
