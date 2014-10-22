@@ -22,8 +22,8 @@ manipulations:
   - modifier: refly_etl.modifiers.ReplaceByDictFile
     field: content
     file: urls.csv 
-    regex: #
-      \[.*\]\((.*)\)
+    regex: |
+      \[\d*\]: ([\.:?=/\w\-#~,\.; \(\)]*)
   - filter: refly_etl.modifiers.UniqueField
     field: uri
 
