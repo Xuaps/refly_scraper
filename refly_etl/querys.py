@@ -5,9 +5,11 @@ def UpsertQuery( connection, insert_buffer, update_buffer ):
         """,
         insert_buffer[0]['docset']
     )
+
     for item in insert_buffer:
         connection.execute(
             """
+			SET CONSTRAINTS ALL DEFERRED;
             INSERT INTO refs ( reference, type, docset, content, uri, parent_uri)\
             VALUES (%s, %s, %s, %s, %s, %s);
             """,
