@@ -17,6 +17,6 @@ class ReflyPipelineTest(unittest.TestCase):
         self.assertEqual(result["docset"], "JavaScript")
         self.assertEqual(result["name"], "Math.cosh()")
         self.assertEqual(result["type"], "method")
-        self.assertEqual(result["parsed_url"], "/javascript/standard built-in objects/math/math.cosh()")
-        self.assertEqual(result["parent"], "/javascript/standard built-in objects/math")
+        self.assertEqual(result["parsed_url"], "/javascript/standard_built-in_objects/math/math.cosh()")
+        self.assertEqual(result["parent"], "/javascript/standard_built-in_objects/math")
         self.assertEqual(result["content"], "# Hello World!\n\n")
