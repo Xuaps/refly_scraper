@@ -37,14 +37,15 @@ class UniqueField( Filter ):
     def __init__( self, reader, field, *args, **kwargs ):
 
         self.field = field
-
         super( UniqueField, self ).__init__( reader, *args, **kwargs )
     # bool
     def isFiltered( self, record ):
+        
         key = record.getField(self.field).getValue()
+
         if key in self.included:
             return True
 
         self.included.append(key)
-        
+        print "entra por aqui: " + key        
         return False

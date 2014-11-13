@@ -16,6 +16,9 @@ class ReflyPipeline(object):
         item['type'] = spider.resolveType(item['url'], item['name'])
         item['parsed_url'] = spider.getSlashUrl(item['path'], item['name']).replace(' ', '_')
         item['parent'] = item['parsed_url'][0:item['parsed_url'].rfind('/')]
+        if item['parent'].rfind('/')==0:
+          item['parent'] = None
+	
         item['content'] = self.html2text(item['content'])
         return item
 

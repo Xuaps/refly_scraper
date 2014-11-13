@@ -1,4 +1,5 @@
 def UpsertQuery( connection, insert_buffer, update_buffer ):
+    connection.execute("begin")    
     connection.execute(
         """
         DELETE FROM refs WHERE docset=%s;
@@ -15,3 +16,4 @@ def UpsertQuery( connection, insert_buffer, update_buffer ):
             """,
             item['reference'], item['type'], item['docset'], item['content'], item['uri'], item['parent']
         )
+    connection.execute("end")
