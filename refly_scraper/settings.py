@@ -10,8 +10,8 @@
 
 BOT_NAME = 'refly_scraper'
 
-SPIDER_MODULES = ['refly_scraper.spiders']
-NEWSPIDER_MODULE = 'refly_scraper.spiders'
+SPIDER_MODULES = ['refly_spiders']
+NEWSPIDER_MODULE = 'refly_spiders'
 ITEM_PIPELINES = {'refly_scraper.pipelines.ReflyPipeline': 100}
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

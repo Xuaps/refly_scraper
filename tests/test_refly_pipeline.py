@@ -1,7 +1,7 @@
 import unittest
 from refly_scraper.pipelines import ReflyPipeline
 from refly_scraper.items import ReferenceItem
-from refly_scraper.spiders.js import JsSpider
+from refly_spiders.js import JsSpider
 
 class ReflyPipelineTest(unittest.TestCase):
     def test_process_item(self):
