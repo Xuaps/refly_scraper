@@ -9,18 +9,17 @@ class ReplaceByDictFile( Modifier ):
 
     def __init__( self, reader, file, field, regex = None, *args, **kwargs ):
 
-        self.regex = regex
-        self.field = field
+        self.regex = regex.decode('utf-8')
+        self.field = field.decode('utf-8')
         with open(file, mode='r') as infile:
             file_reader = csv.reader(infile, delimiter='|')
-            self.urls = {rows[0]:rows[1] for rows in file_reader}
+            self.urls = {rows[0]:rows[1].decode('utf-8') for rows in file_reader}
 
         super( ReplaceByDictFile, self ).__init__( reader, *args, **kwargs )
 
     # FieldSet
     def modify( self, record ):
-
-        content=record.getField(self.field).getValue()
+        content = unicode(record.getField(self.field).getValue())
         for match in re.findall(self.regex,content):
             if match in self.urls:
                 content = content.replace(match, self.urls[match], 1)

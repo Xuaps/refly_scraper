@@ -10,6 +10,7 @@ import scrapy
 
 class ReferenceItem(scrapy.Item):
   name = scrapy.Field()
+  alias = scrapy.Field()
   content = scrapy.Field()
   path = scrapy.Field()
   url = scrapy.Field()
