@@ -30,5 +30,7 @@ manipulations:
 target:
   type: Database
   url: postgresql://postgres@127.0.0.1:5432/slashdb
-  fn: refly_etl.querys.UpsertQuery
-  continueOnError: true
+  table: temp_refs
+  createTable: true
+  truncateTable: false
+  continueOnError: false
