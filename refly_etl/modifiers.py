@@ -23,9 +23,7 @@ class ReplaceByDictFile( Modifier ):
         for match in re.findall(self.regex,content):
             if match in self.urls:
                 content = content.replace(match, self.urls[match], 1)
-
         record.getField(self.field).setValue(content)
-
         return record
 
 
