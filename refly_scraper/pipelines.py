@@ -10,6 +10,7 @@ import codecs
 
 class ReflyPipeline(object):
     link_re = re.compile("( *\[\d*\]: (?:[\.:?=/\w\-#~,\.; \(\)%]|(?:\\n))*)")
+    validlink = re.compile(u" *\[\d*\]: (\/en-US\/docs\/Web\/JavaScript\/Reference.*)")
     title = re.compile("(title=(?:\"[^\"]*\"|'[^']*'))")
 
     def process_item(self, item, spider):
@@ -31,6 +32,8 @@ class ReflyPipeline(object):
         txt = h.handle(html).replace('`[', '[`')
 
         for l in self.link_re.findall(txt):
-            txt = txt.replace(l, l.replace('\n', '').strip() + '\n\n')
-
+           txt = txt.replace(l, l.replace('\n', '').strip() + '\n\n')
+           if l.find('http://')== -1:
+               txt = txt.replace(l,l.replace(u'/en-US/', u'https://developer.mozilla.org/en-US/'))
+ 
         return txt

@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import psycopg2
+import sys
 
 def main(argv):
   connection_string = "host='localhost' dbname='slashdb' user='postgres'"
@@ -21,15 +22,16 @@ def main(argv):
 
   pgcursor.execute(queryfirstref)
   refsrow = pgcursor.fetchone()
-  if argv[0] == 'overrides':
-    pgcursor.execute(queryrefsdelete,refsrow[0])
+  if len(argv)>0:
+      if unicode(argv[0]) == u'overrides':
+          pgcursor.execute(queryrefsdelete,[refsrow[0]])
 
   pgcursor.execute(queryrefsinsert)
    
-  if pgcursor.execute(querydocsetselect,refsrow[0]) != None:
-    pgcursor.execute(querydocsetupdate, refsrow[0])
+  if pgcursor.execute(querydocsetselect,[refsrow[0]]) != None:
+    pgcursor.execute(querydocsetupdate, [refsrow[0]])
   else:
-    pgcursor.execute(querydocsetinsert,row[0], row[1], 'new')
+    pgcursor.execute(querydocsetinsert,[refsrow[0], refsrow[1], 'new'])
 
   pgcursor.execute(querytruncate)
   print "Transfer completed!\n"
