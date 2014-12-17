@@ -27,11 +27,12 @@ def main(argv):
           pgcursor.execute(queryrefsdelete,[refsrow[0]])
 
   pgcursor.execute(queryrefsinsert)
-   
-  if pgcursor.execute(querydocsetselect,[refsrow[0]]) != None:
-    pgcursor.execute(querydocsetupdate, [refsrow[0]])
+  pgcursor.execute(querydocsetselect,[refsrow[0]])
+  docsetsrow = pgcursor.fetchone()
+  if docsetsrow:
+      pgcursor.execute(querydocsetupdate, [refsrow[0]])
   else:
-    pgcursor.execute(querydocsetinsert,[refsrow[0], refsrow[1], 'new'])
+      pgcursor.execute(querydocsetinsert,[refsrow[0], refsrow[1], 'new'])
 
   pgcursor.execute(querytruncate)
   print "Transfer completed!\n"
