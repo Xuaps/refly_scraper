@@ -13,9 +13,12 @@ class ReflyPipeline(object):
 
     def process_item(self, item, spider):
         item['docset'] = spider.name
+        if type not in item:
+            item['type'] = spider.resolveType(item['url'], item['name'])
+        item['parsed_url'] = spider.getSlashUrl(item['path'], item['alias'])
+        item['parent'] = spider.getSlashUrl(item['path'], '')
         item['type'] = spider.resolveType(item['url'], item['name'])
-        item['parsed_url'] = spider.getSlashUrl(item['path'], item['name']).replace(' ', '_')
-        item['parent'] = item['parsed_url'][0:item['parsed_url'].rfind('/')]
+        item['parsed_url'] = spider.getSlashUrl(item['path'], item['name'])
         item['content'] = self.html2text(item['content'])
         return item
 
