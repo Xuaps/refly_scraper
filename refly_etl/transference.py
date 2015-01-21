@@ -16,7 +16,7 @@ def main(argv):
   querytruncate = "TRUNCATE TABLE temp_refs"
   
   querydocsetselect = "SELECT docset FROM docsets WHERE docset = %s"
-  querydocsetinsert = "INSERT INTO docsets (docset, default_uri, pub_date, update_date, state) VALUES (%s,%s,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,%s)"
+  querydocsetinsert = "INSERT INTO docsets (docset, default_uri, pub_date, update_date, active) VALUES (%s,%s,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,%s)"
   querydocsetupdate = "UPDATE docsets SET update_date = CURRENT_TIMESTAMP WHERE docset = %s"
 
 
@@ -32,7 +32,7 @@ def main(argv):
   if docsetsrow:
       pgcursor.execute(querydocsetupdate, [refsrow[0]])
   else:
-      pgcursor.execute(querydocsetinsert,[refsrow[0], refsrow[1], 'new'])
+      pgcursor.execute(querydocsetinsert,[refsrow[0], refsrow[1], True])
 
   pgcursor.execute(querytruncate)
   print "Transfer completed!\n"

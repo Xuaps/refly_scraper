@@ -19,11 +19,14 @@ source:
           key: true
 
 manipulations:
+  - modifier: refly_etl.modifiers.RepairLinks
+    field: content
+    file: urlerrors.csv
+    regex: |
+        \n\n\[\d*\]: ([\.:?=/\w\-#~,\.; \@\(\)]*)  
   - modifier: refly_etl.modifiers.ReplaceByDictFile
     field: content
     file: urls.csv 
-    regex: |
-      \[\d*\]: ([\.:?=/\w\-#~,\.; \(\)]*)
   - filter: refly_etl.modifiers.UniqueField
     field: uri
 
@@ -34,3 +37,4 @@ target:
   createTable: true
   truncateTable: false
   continueOnError: false
+

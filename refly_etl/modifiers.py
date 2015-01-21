@@ -1,4 +1,4 @@
-import urllib, demjson
+import urllib,  demjson
 import re
 import csv
 from metl.utils import *
@@ -7,25 +7,63 @@ class ReplaceByDictFile( Modifier ):
 
     init = ['file','field','regex']
 
-    def __init__( self, reader, file, field, regex = None, *args, **kwargs ):
+    def __init__( self, reader, file, field, regex = '\n   (\[\d*\]: [\.:?=/\w\-#~,\.; \@\(\)]*)', *args, **kwargs ):
 
         self.regex = regex.decode('utf-8')
         self.field = field.decode('utf-8')
         with open(file, mode='r') as infile:
             file_reader = csv.reader(infile, delimiter='|')
             self.urls = {rows[0]:rows[1].decode('utf-8') for rows in file_reader}
-
         super( ReplaceByDictFile, self ).__init__( reader, *args, **kwargs )
 
     # FieldSet
     def modify( self, record ):
         content = unicode(record.getField(self.field).getValue())
         for match in re.findall(self.regex,content):
-            if match in self.urls:
-                content = content.replace(match, self.urls[match], 1)
+            keymatch = self.get_url(match)
+            if keymatch in self.urls:
+                content = content.replace(match, self.get_url_number(match)+self.urls[keymatch], 1)
+                record.getField(self.field).setValue(content)
+        return record
+    
+    def get_url(self, match):
+        sanitized = match[match.find(': ')+2:] 
+        if sanitized.find('#')!=-1:
+            sanitized = sanitized[:sanitized.find('#')]
+
+        return sanitized
+
+    def get_url_number(self, match):
+        return match[:match.find(': ')+2]
+
+class RepairLinks( Modifier ):
+
+    init = ['file','field','regex']
+
+    def __init__( self, reader, file, field, regex = None, *args, **kwargs ):
+
+        self.regex = regex.decode('utf-8')
+        self.field = field.decode('utf-8')
+        self.urls = []
+        with open(file, mode='r') as infile:
+            file_reader = csv.reader(infile, delimiter=',')
+            for rows in file_reader:
+                self.urls.append({'code': rows[0],'origin': rows[1],'final': rows[2]})
+
+        super( RepairLinks, self ).__init__( reader, *args, **kwargs )
+
+    # FieldSet
+    def modify( self, record ):
+        content = unicode(record.getField(self.field).getValue())
+        for uri in self.urls:
+            link_re = re.compile("\[\d*\]: (" + uri['origin'] + ")\n\n")
+            for match in re.findall(link_re,content):
+                if uri['code'] =='301':
+                    content = content.replace(match, uri['final'],1)
+                elif uri['code'] =='404':
+                    content = content.replace(match, '/searchfor/' + match.split('/')[-1],1)
         record.getField(self.field).setValue(content)
         return record
-
 
 class UniqueField( Filter ):
     included = []
