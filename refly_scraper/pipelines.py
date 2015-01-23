@@ -6,11 +6,19 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import html2text as html2text_orig
 import re
+import psycopg2
+import sys
+from scrapy.xlib.pydispatch import dispatcher
+from scrapy import signals
 
 class ReflyPipeline(object):
     table_re = re.compile("<table((.|\n)*?)<\/table>")
     link_re = re.compile("( *\[\d*\]: (?:[\.:?=/\w\-@#~,\.; \(\)%]|(?:\\n))*)")
     title = re.compile("(title=(?:\"[^\"]*\"|'[^']*'))")
+    connection_string = "host='localhost' dbname='slashdb' user='postgres'"
+    def __init__(self):
+        self.connection = psycopg2.connect(self.connection_string)
+        dispatcher.connect(self.spider_closed, signals.spider_closed)
 
     def process_item(self, item, spider):
         item['docset'] = spider.name
@@ -20,6 +28,7 @@ class ReflyPipeline(object):
         item['type'] = spider.resolveType(item['url'], item['name'])
         item['parsed_url'] = spider.getSlashUrl(item['path'], item['alias'])
         item['content'] = self.html2text(item['content'])
+        self.sendToDB(item)
         return item
 
     def html2text(self, html):
@@ -47,3 +56,11 @@ class ReflyPipeline(object):
         for table in self.table_re.findall(txt):
             txt = txt.replace(table[0], table[0].replace('\n', ' '))
         return txt
+
+    def sendToDB(self, item):
+        pgcursor = self.connection.cursor()
+        sqlinsertitem = "INSERT INTO temp_refs (reference, content, uri, parent, type, docset) VALUES (%s, %s, %s, %s, %s, %s)"
+        pgcursor.execute(sqlinsertitem,[item['name'], item['content'], item['url'], item['parent'], item['type'], item['docset']])
+
+    def spider_closed(self, spider):
+        self.connection.commit()
