@@ -1,5 +1,7 @@
 source:
-    source: JSON
+    source: Database
+    url: 'postgresql://postgres:@localhost:5432/slashdb'
+    statement: 'SELECT name, parent, url, parsed_url, content, docset, alias, type FROM source_refs'
     fields:
         - name: reference
           type: String
@@ -34,7 +36,7 @@ target:
   type: Database
   url: postgresql://postgres@127.0.0.1:5432/slashdb
   table: temp_refs
-  createTable: true
+  createTable: false
   truncateTable: false
   continueOnError: false
 

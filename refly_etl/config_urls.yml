@@ -1,5 +1,7 @@
 source:
-    source: JSON
+    source: Database
+    url: 'postgresql://postgres:@localhost:5432/slashdb'
+    statement: 'SELECT url, parsed_url FROM source_refs'
     fields:
         - name: key
           type: String

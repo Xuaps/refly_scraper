@@ -13,7 +13,7 @@ from scrapy import signals
 
 class ReflyPipeline(object):
     table_re = re.compile("<table((.|\n)*?)<\/table>")
-    link_re = re.compile("( *\[\d*\]: (?:[\.:?=/\w\-@#~,\.; \(\)%]|(?:\\n))*)")
+    link_re = re.compile("( *\[\d*\]: (?:[\.:?=/\w\*\-@#~,\.; \(\)%]|(?:\\n))*)")
     title = re.compile("(title=(?:\"[^\"]*\"|'[^']*'))")
     connection_string = "host='localhost' dbname='slashdb' user='postgres'"
     def __init__(self):
@@ -59,8 +59,12 @@ class ReflyPipeline(object):
 
     def sendToDB(self, item):
         pgcursor = self.connection.cursor()
-        sqlinsertitem = "INSERT INTO temp_refs (reference, content, uri, parent, type, docset) VALUES (%s, %s, %s, %s, %s, %s)"
-        pgcursor.execute(sqlinsertitem,[item['name'], item['content'], item['url'], item['parent'], item['type'], item['docset']])
+        sqlinsertitem = "INSERT INTO source_refs (name, parent, url, parsed_url, content, docset, alias, type) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        pgcursor.execute(sqlinsertitem,[item['name'], item['parent'],
+                                        item['url'], item['parsed_url'],
+                                        item['content'], item['docset'],
+                                        item['alias'],
+                                        item['type']])
 
     def spider_closed(self, spider):
         self.connection.commit()

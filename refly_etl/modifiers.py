@@ -7,7 +7,7 @@ class ReplaceByDictFile( Modifier ):
 
     init = ['file','field','regex']
 
-    def __init__( self, reader, file, field, regex = '\n   (\[\d*\]: [\.:?=/\w\-#~,\.; \@\(\)]*)', *args, **kwargs ):
+    def __init__( self, reader, file, field, regex = '\n   (\[\d*\]: [\.:?=/\w\-#~,\.; \*\@\(\)]*)', *args, **kwargs ):
 
         self.regex = regex.decode('utf-8')
         self.field = field.decode('utf-8')
@@ -41,7 +41,6 @@ class RepairLinks( Modifier ):
     init = ['file','field','regex']
 
     def __init__( self, reader, file, field, regex = None, *args, **kwargs ):
-
         self.regex = regex.decode('utf-8')
         self.field = field.decode('utf-8')
         self.urls = []
@@ -56,14 +55,18 @@ class RepairLinks( Modifier ):
     def modify( self, record ):
         content = unicode(record.getField(self.field).getValue())
         for uri in self.urls:
-            link_re = re.compile("\[\d*\]: (" + uri['origin'] + ")\n\n")
+            link_re = re.compile("\[\d*\]: (" + self.escape_chars(uri['origin']) + ")")
             for match in re.findall(link_re,content):
                 if uri['code'] =='301':
-                    content = content.replace(match, uri['final'],1)
+                    content = content.replace(match, self.escape_chars(uri['final']),1)
                 elif uri['code'] =='404':
                     content = content.replace(match, '/searchfor/' + match.split('/')[-1],1)
         record.getField(self.field).setValue(content)
         return record
+
+    def escape_chars(self,text):
+        return text.replace('(', '\(').replace(')', '\)')
+
 
 class UniqueField( Filter ):
     included = []
