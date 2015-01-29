@@ -54,7 +54,7 @@ class BaseRedirectMiddleware(object):
             rowwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
             rowwriter.writerow(item)
 
-class RedirectMiddleware(BaseRedirectMiddleware):
+class HandleHttpCodesMiddleware(BaseRedirectMiddleware):
     """Handle redirection of requests based on response status and meta-refresh html tag"""
 
     def process_response(self, request, response, spider):
@@ -68,6 +68,9 @@ class RedirectMiddleware(BaseRedirectMiddleware):
                 return self._redirect(redirected, request, spider, response.status)
             else:
                 return response
+        if response.status in [400,401,402,403,404]:
+            self.log_errors([unicode('404'),urlparse.urlparse(response.url).path,''])
+
 
         if response.status in [302, 303] and 'Location' in response.headers:
             redirected_url = urljoin(request.url, response.headers['location'])

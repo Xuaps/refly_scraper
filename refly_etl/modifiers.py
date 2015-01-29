@@ -7,7 +7,7 @@ class ReplaceByDictFile( Modifier ):
 
     init = ['file','field','regex']
 
-    def __init__( self, reader, file, field, regex = '\n   (\[\d*\]: [\.:?=/\w\-#~,\.; \*\@\(\)]*)', *args, **kwargs ):
+    def __init__( self, reader, file, field, regex = '\n   (\[\d*\]: [\.:?\=\/\w\-#~,\.; \*\@\(\)]*)', *args, **kwargs ):
 
         self.regex = regex.decode('utf-8')
         self.field = field.decode('utf-8')

@@ -3,29 +3,26 @@
 
 import urlparse
 from scrapy.http import Request
-from scrapy.exceptions import CloseSpider
 from scrapy.http import HtmlResponse
 from scrapy.utils.response import get_meta_refresh
+from scrapy import signals
 import csv
 
 
-class reflyScraperMiddleware(object):
+class errorHandler(object):
     
+    spider_errors = []
 
-    def __init__(self):
-        self.errors404 = []
+    @classmethod
+    def from_crawler(cls, crawler):
+        ext = cls()
+        crawler.signals.connect(ext.spider_error, signal = signals.spider_error)
+        crawler.signals.connect(ext.handle_spider_closed, signal = signals.spider_closed)
+        return ext
 
-    def process_request(self, request, spider):
-        return None 
+    def spider_error(self, failure, response, spider):
+            self.spider_errors.append(failure.getTraceback())
 
-    def process_response(self, request, response, spider):
-        if response.status in [404]:
-            self.errors404.append(response.url)
-            self.log_errors([unicode('404'),urlparse.urlparse(response.url).path,''])
-            #raise CloseSpider('Page not found')
-        return response
-
-    def log_errors(self, item):
-        with open('urlerrors.csv', 'a') as csvfile:
-            rowwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
-            rowwriter.writerow(item)
+    def handle_spider_closed(self, spider, reason):
+        if len(self.spider_errors)>0:
+            spider.crawler.stats.set_value('spider_errors', ','.join(self.spider_errors))

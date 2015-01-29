@@ -13,10 +13,13 @@ BOT_NAME = 'refly_scraper'
 SPIDER_MODULES = ['refly_spiders']
 NEWSPIDER_MODULE = 'refly_spiders'
 ITEM_PIPELINES = {'refly_scraper.pipelines.ReflyPipeline': 100}
-DOWNLOADER_MIDDLEWARES = { 'refly_scraper.errorcatcher.reflyScraperMiddleware': 543,
+DOWNLOADER_MIDDLEWARES = {
 						   'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
                            'scrapy.contrib.downloadermiddleware.redirect.RedirectMiddleware': None,
-                           'refly_scraper.redirect.RedirectMiddleware': 100,
+                           'refly_scraper.redirect.HandleHttpCodesMiddleware': 100,
+}
+EXTENSIONS = {
+    'refly_scraper.errorcatcher.errorHandler': 100
 }
 REDIRECT_ENABLED = True
 REDIRECT_MAX_TIMES = 20
