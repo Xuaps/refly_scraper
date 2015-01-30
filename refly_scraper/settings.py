@@ -24,7 +24,12 @@ EXTENSIONS = {
 REDIRECT_ENABLED = True
 REDIRECT_MAX_TIMES = 20
 REDIRECT_PRIORITY_ADJUST = +2
+
 DUPEFILTER_CLASS = 'refly_scraper.customdupefilter.CustomFilter'
+
+STATS_DUMP = True 
+LOG_LEVEL = 'INFO'
+#LOG_FILE = '%s.log' % (BOT_NAME)
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'refly_scrap (+http://www.yourdomain.com)'
