@@ -14,7 +14,7 @@ SPIDER_MODULES = ['refly_spiders']
 NEWSPIDER_MODULE = 'refly_spiders'
 ITEM_PIPELINES = {'refly_scraper.pipelines.ReflyPipeline': 100}
 DOWNLOADER_MIDDLEWARES = {
-						   'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
+			   'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
                            'scrapy.contrib.downloadermiddleware.redirect.RedirectMiddleware': None,
                            'refly_scraper.redirect.HandleHttpCodesMiddleware': 100,
 }
@@ -24,5 +24,7 @@ EXTENSIONS = {
 REDIRECT_ENABLED = True
 REDIRECT_MAX_TIMES = 20
 REDIRECT_PRIORITY_ADJUST = +2
+DUPEFILTER_CLASS = 'refly_scraper.customdupefilter.CustomFilter'
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'refly_scrap (+http://www.yourdomain.com)'
