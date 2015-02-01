@@ -1,7 +1,7 @@
 source:
     source: Database
     url: 'postgresql://postgres:@localhost:5432/slashdb'
-    statement: 'SELECT name, parent, url, parsed_url, content, docset, alias, type FROM source_refs'
+    statement: 'SELECT name, parent, uri, parsed_uri, content, docset, alias, type FROM source_refs'
     fields:
         - name: reference
           type: String
@@ -10,7 +10,7 @@ source:
           type: String
         - name: uri
           type: String
-          map: parsed_url
+          map: parsed_uri
           key: true
         - name: parent
           type: String

@@ -1,14 +1,14 @@
 source:
     source: Database
     url: 'postgresql://postgres:@localhost:5432/slashdb'
-    statement: 'SELECT url, parsed_url FROM source_refs'
+    statement: 'SELECT uri, parsed_uri FROM source_refs'
     fields:
         - name: key
           type: String
-          map: url
+          map: uri
         - name: value
           type: String
-          map: parsed_url
+          map: parsed_uri
 
 manipulations:
   - filter: refly_etl.modifiers.UniqueField

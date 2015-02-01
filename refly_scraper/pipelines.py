@@ -59,7 +59,7 @@ class ReflyPipeline(object):
 
     def sendToDB(self, item):
         pgcursor = self.connection.cursor()
-        sqlinsertitem = "INSERT INTO source_refs (name, parent, url, parsed_url, content, docset, alias, type) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        sqlinsertitem = "INSERT INTO source_refs (name, parent, uri, parsed_uri, content, docset, alias, type) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         pgcursor.execute(sqlinsertitem,[item['name'], item['parent'],
                                         item['url'], item['parsed_url'],
                                         item['content'], item['docset'],
