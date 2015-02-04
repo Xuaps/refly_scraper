@@ -7,13 +7,13 @@ class ReplaceByDictFile( Modifier ):
 
     init = ['file','field','regex']
 
-    def __init__( self, reader, file, field, regex = '\n   (\[\d*\]: [\.:?\=\/\w\-#~,\.; \*\@\(\)]*)', *args, **kwargs ):
+    def __init__( self, reader, file, field, regex = '\n   (\[\d*\]: [\.:?\=/\w\-#~,\.; \*\@\(\)]*)', *args, **kwargs ):
 
-        self.regex = regex.decode('utf-8')
-        self.field = field.decode('utf-8')
+        self.regex = regex
+        self.field = field
         with open(file, mode='r') as infile:
             file_reader = csv.reader(infile, delimiter='|')
-            self.urls = {rows[0]:rows[1].decode('utf-8') for rows in file_reader}
+            self.urls = {rows[0]:rows[1] for rows in file_reader}
         super( ReplaceByDictFile, self ).__init__( reader, *args, **kwargs )
 
     # FieldSet
@@ -55,10 +55,10 @@ class RepairLinks( Modifier ):
     def modify( self, record ):
         content = unicode(record.getField(self.field).getValue())
         for uri in self.urls:
-            link_re = re.compile("\[\d*\]: (" + self.escape_chars(uri['origin']) + ")")
+            link_re = re.compile("\[\d*\]: (" + self.escape_chars(uri['origin']) + "\n)")
             for match in re.findall(link_re,content):
                 if uri['code'] =='301':
-                    content = content.replace(match, self.escape_chars(uri['final']),1)
+                    content = content.replace(match, self.escape_chars(uri['final']) + '\n',1)
                 elif uri['code'] =='404':
                     content = content.replace(match, '/searchfor/' + match.split('/')[-1],1)
         record.getField(self.field).setValue(content)
